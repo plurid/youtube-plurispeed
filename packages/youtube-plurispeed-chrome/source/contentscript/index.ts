@@ -113,6 +113,65 @@ const injectButton = () => {
         menu.className = 'ytp-panel-menu';
         menu.setAttribute('role', 'menu');
 
+
+        {
+            const WPM = 140;
+
+            const wpmMap = [
+                { label: 'Very Slow', speedRange: [80, 100] },
+                { label: 'Slow', speedRange: [100, 130] },
+                { label: 'Normal', speedRange: [130, 160] },
+                { label: 'Fast', speedRange: [160, 200] },
+                { label: 'Very Fast', speedRange: [200, 240] }
+            ];
+
+            const wpmSpeed = wpmMap.find(wpm => {
+                const [min, max] = wpm.speedRange;
+                return WPM >= min && WPM < max;
+            });
+
+            const menuItem = document.createElement('div');
+            menuItem.className = 'ytp-menuitem';
+            menuItem.setAttribute('tabindex', '0');
+            menuItem.style.pointerEvents = 'none';
+            const label = document.createElement('div');
+            label.className = 'ytp-menuitem-label';
+            label.innerText = `Dynamic ${WPM} WPM · ${wpmSpeed.label}`;
+            label.style.textAlign = 'center';
+            menuItem.appendChild(label);
+
+            const speedSliderComponent = document.createElement('div');
+            speedSliderComponent.className = 'ytp-speedslider-component';
+            speedSliderComponent.style.height = '50px';
+
+            const sliderSection = document.createElement('div');
+            sliderSection.className = 'ytp-slider-section';
+            sliderSection.setAttribute('role', 'slider');
+            sliderSection.setAttribute('tabindex', '0');
+            sliderSection.setAttribute('aria-valuetext', '1');
+            sliderSection.setAttribute('aria-valuenow', '1');
+            sliderSection.setAttribute('aria-valuemin', '0.25');
+            sliderSection.setAttribute('aria-valuemax', '2');
+
+            const slider = document.createElement('div');
+            slider.className = 'ytp-slider ytp-speedslider';
+            slider.style.touchAction = 'none';
+            slider.setAttribute('draggable', 'true');
+
+            const sliderHandle = document.createElement('div');
+            sliderHandle.className = 'ytp-slider-handle';
+            sliderHandle.style.left = '50px';
+
+            slider.appendChild(sliderHandle);
+            sliderSection.appendChild(slider);
+            speedSliderComponent.appendChild(sliderSection);
+
+
+            menu.appendChild(menuItem);
+            menu.appendChild(speedSliderComponent);
+        }
+
+
         for (const speaker of speakers) {
             const menuItem = document.createElement('div');
             menuItem.className = 'ytp-menuitem';
