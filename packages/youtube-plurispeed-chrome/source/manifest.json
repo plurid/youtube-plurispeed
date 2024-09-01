@@ -1,0 +1,40 @@
+{
+    "manifest_version" : 3,
+    "name" : "YouTube PluriSpeed",
+    "short_name" : "YouTube PluriSpeed",
+    "description" : "play YouTube videos at different speeds for different speakers",
+    "version" : "1.0.0",
+    "author": "plurid",
+
+    "action" : {
+        "default_title" : "YouTube PluriSpeed",
+        "default_icon" : "assets/icons/icon.png",
+        "default_popup" : "popup.html"
+    },
+
+    "icons" : {
+        "16" : "assets/icons/icon16.png",
+        "32" : "assets/icons/icon32.png",
+        "48" : "assets/icons/icon48.png",
+        "128" : "assets/icons/icon128.png"
+    },
+
+    "incognito": "spanning",
+
+    "content_scripts": [{
+        "matches": ["https://*.youtube.com/*"],
+        "js": [
+            "contentscript.js"
+        ],
+        "run_at": "document_end"
+    }],
+
+    "background": {
+        "service_worker": "background.js"
+    },
+
+    "permissions": [
+        "activeTab",
+        "storage"
+    ]
+}

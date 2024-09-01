@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plurid-app-apps-plurispeed-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: plurid-app-apps-plurispeed-api
+  template:
+    metadata:
+      labels:
+        app: plurid-app-apps-plurispeed-api
+    spec:
+      containers:
+      - name: plurid-app-apps-plurispeed-api
+        image: hypod.cloud/plurid/production/plurispeed-api:COMMIT_SHA
+        ports:
+        - containerPort: 8080
+        env:
+        - name: COOKIE_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: plurid-app-apps-plurispeed-api
+              key: COOKIE_DOMAIN
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: plurid-app-apps-plurispeed-api
+              key: DATABASE_URL
+        - name: DATABASE_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: plurid-app-apps-plurispeed-api
+              key: DATABASE_AUTH_TOKEN
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: plurid-app-apps-plurispeed-api
+              key: GOOGLE_CLIENT_ID
+        - name: GOOGLE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: plurid-app-apps-plurispeed-api
+              key: GOOGLE_CLIENT_SECRET
+        - name: STRIPE_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: plurid-app-apps-plurispeed-api
+              key: STRIPE_SECRET_KEY
+      imagePullSecrets:
+      - name: hypod-cloud-registry
