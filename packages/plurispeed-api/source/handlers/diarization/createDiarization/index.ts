@@ -5,6 +5,8 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
+import { eq } from 'drizzle-orm';
+
 import {
     APICreateDiarization,
 } from '@/source/data/api';
@@ -46,21 +48,57 @@ export default async function handler(
         // }
 
 
-        const id = uuid();
-        const createdAt = new Date().toISOString();
-        const createdBy = 'system';
+        const parsedURL = new URL(url);
+        if (parsedURL.hostname === 'localhost') {
+            response.status(400).json({
+                status: false,
+            });
+            return;
+        }
 
-        await database.insert(diarizations).values({
-            id,
-            createdBy,
-            createdAt,
-            url,
-            data: JSON.stringify(data),
-        });
+        const diarization = await database
+            .query
+            .diarizations
+            .findFirst({
+                where: eq(diarizations.url, url),
+            });
+        if (!diarization) {
+            const id = uuid();
+            const createdAt = new Date().toISOString();
+            const createdBy = 'system';
 
+            await database.insert(diarizations).values({
+                id,
+                createdBy,
+                createdAt,
+                url,
+                data: JSON.stringify(data),
+                status: 'processed',
+            });
 
-        response.json({
-            status: true,
+            response.json({
+                status: true,
+            });
+            return;
+        }
+
+        if (diarization.status === 'processing') {
+            await database
+                .update(diarizations)
+                .set({
+                    data: JSON.stringify(data),
+                    status: 'processed',
+                })
+                .where(
+                    eq(diarizations.id, diarization.id),
+                );
+
+            return;
+        }
+
+        // Already existing.
+        response.status(409).json({
+            status: false,
         });
     } catch (error) {
         logger('error', error);

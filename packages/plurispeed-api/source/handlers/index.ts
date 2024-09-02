@@ -5,6 +5,7 @@ import googleLogin from './googleLogin';
 
 import getDiarization from './diarization/getDiarization';
 import createDiarization from './diarization/createDiarization';
+import requestDiarization from './diarization/requestDiarization';
 
 
 export {
@@ -15,4 +16,5 @@ export {
 
     getDiarization,
     createDiarization,
+    requestDiarization,
 };

@@ -14,6 +14,7 @@ export const diarizations = sqliteTable(
         createdBy: text('created_by').notNull(),
         url: text('url').notNull(),
         data: text('data').notNull(),
+        status: text('data').notNull(),
     },
     (diarizations) => ({
         urlIdx: index('urlIdx').on(diarizations.url),

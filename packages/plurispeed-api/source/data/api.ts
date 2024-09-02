@@ -13,9 +13,11 @@ export const DiarizationData = z.object({
     ),
 }).strict();
 
+const url = z.string().url();
+
 
 export const APIGetDiarization = z.object({
-    url: z.string(),
+    url,
 }).strict();
 
 export const APIGetDiarizationResponse = z.object({
@@ -26,6 +28,10 @@ export const APIGetDiarizationResponse = z.object({
 export type TypeAPIGetDiarizationResponse = z.infer<typeof APIGetDiarizationResponse>;
 
 export const APICreateDiarization = z.object({
-    url: z.string(),
+    url,
     data: DiarizationData,
+}).strict();
+
+export const APIRequestDiarization = z.object({
+    url,
 }).strict();
