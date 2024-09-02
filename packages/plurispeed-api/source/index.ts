@@ -10,6 +10,7 @@ import {
     getDiarization,
     createDiarization,
     requestDiarization,
+    flagDiarization,
 } from './handlers';
 
 
@@ -43,6 +44,7 @@ const main = async () => {
     app.post('/get-diarization', getDiarization);
     app.post('/create-diarization', createDiarization);
     app.post('/request-diarization', requestDiarization);
+    app.post('/flag-diarization', flagDiarization);
 
     app.listen(port, () => {
         console.log(`Server started on ${port}`);

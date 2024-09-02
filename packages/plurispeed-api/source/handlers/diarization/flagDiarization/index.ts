@@ -6,22 +6,13 @@ import type {
 import { eq } from 'drizzle-orm';
 
 import {
-    APIRequestDiarization,
+    APIFlagDiarization,
 } from '@/source/data/api';
-
-import {
-    DIARIZATION_ENDPOINT,
-    API_ENDPOINT,
-} from '@/source/data';
 
 import database from '@/source/database';
 import {
     diarizations,
 } from '@/source/database/schema/diarizations';
-
-import {
-    NewDiarization,
-} from '@/source/models/diarization';
 
 import {
     getTokensUser,
@@ -39,8 +30,9 @@ export default async function handler(
 ) {
     try {
         const {
-            url,
-        } = APIRequestDiarization.parse(request.body);
+            id,
+            flag,
+        } = APIFlagDiarization.parse(request.body);
 
 
         // const tokensUser = await getTokensUser(request, response);
@@ -58,37 +50,30 @@ export default async function handler(
             .query
             .diarizations
             .findFirst({
-                where: eq(diarizations.url, url),
+                where: eq(diarizations.id, id),
             });
-        if (diarization) {
-            response.status(409).json({
+        if (!diarization) {
+            response.status(404).json({
                 status: false,
             });
             return;
         }
 
-
-        const newDiarization = NewDiarization(url);
-        await database.insert(diarizations).values({
-            ...newDiarization,
-        });
-
-
-        const diarizationRequest = await fetch(DIARIZATION_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                url,
-                webhook: API_ENDPOINT + '/create-diarization',
-            }),
-        });
-        const diarizationResponse: any = await diarizationRequest.json();
+        await database
+            .update(diarizations)
+            .set({
+                flags: JSON.stringify([
+                    ...JSON.parse(diarization.flags),
+                    flag,
+                ]),
+            })
+            .where(
+                eq(diarizations.id, diarization.id),
+            );
 
 
         response.json({
-            status: diarizationResponse.status,
+            status: true,
         });
     } catch (error) {
         logger('error', error);

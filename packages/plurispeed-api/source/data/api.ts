@@ -13,7 +13,7 @@ export const DiarizationData = z.object({
     ),
 }).strict();
 
-const url = z.string().url();
+const url = z.string().trim().url();
 
 
 export const APIGetDiarization = z.object({
@@ -34,4 +34,10 @@ export const APICreateDiarization = z.object({
 
 export const APIRequestDiarization = z.object({
     url,
+}).strict();
+
+export const APIFlagDiarization = z.object({
+    id: z.string(),
+    // Label or Segment flag
+    flag: z.literal('L').or(z.literal('S')),
 }).strict();

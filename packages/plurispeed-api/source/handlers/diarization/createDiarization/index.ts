@@ -3,8 +3,6 @@ import type {
     Response,
 } from 'express';
 
-import { v4 as uuid } from 'uuid';
-
 import { eq } from 'drizzle-orm';
 
 import {
@@ -15,6 +13,10 @@ import database from '@/source/database';
 import {
     diarizations,
 } from '@/source/database/schema/diarizations';
+
+import {
+    NewDiarization,
+} from '@/source/models/diarization';
 
 import {
     getTokensUser,
@@ -63,15 +65,10 @@ export default async function handler(
                 where: eq(diarizations.url, url),
             });
         if (!diarization) {
-            const id = uuid();
-            const createdAt = new Date().toISOString();
-            const createdBy = 'system';
+            const newDiarization = NewDiarization(url);
 
             await database.insert(diarizations).values({
-                id,
-                createdBy,
-                createdAt,
-                url,
+                ...newDiarization,
                 data: JSON.stringify(data),
                 status: 'processed',
             });

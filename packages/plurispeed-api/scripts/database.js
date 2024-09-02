@@ -31,7 +31,9 @@ const tables = [
     created_at TEXT NOT NULL,
     created_by TEXT NOT NULL,
     url TEXT NOT NULL,
-    data TEXT NOT NULL
+    data TEXT NOT NULL,
+    status TEXT NOT NULL,
+    flags TEXT NOT NULL
 );`,
 `CREATE INDEX IF NOT EXISTS urlIdx ON diarizations (url);`,
 ];
