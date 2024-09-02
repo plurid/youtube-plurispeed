@@ -133,12 +133,20 @@ const injectButton = () => {
             const menuItem = document.createElement('div');
             menuItem.className = 'ytp-menuitem';
             menuItem.setAttribute('tabindex', '0');
+            menuItem.setAttribute('role', 'menuitemcheckbox');
+            menuItem.setAttribute('aria-checked', 'false');
             menuItem.style.pointerEvents = 'none';
             const label = document.createElement('div');
             label.className = 'ytp-menuitem-label';
             label.innerText = `Dynamic ${WPM} WPM · ${wpmSpeed.label}`;
             label.style.textAlign = 'center';
+            const content = document.createElement('div');
+            content.className = 'ytp-menuitem-content';
+            const toggle = document.createElement('div');
+            toggle.className = 'ytp-menuitem-toggle-checkbox';
+            content.appendChild(toggle);
             menuItem.appendChild(label);
+            menuItem.appendChild(content);
 
             const speedSliderComponent = document.createElement('div');
             speedSliderComponent.className = 'ytp-speedslider-component';
