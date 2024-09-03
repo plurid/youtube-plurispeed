@@ -29,4 +29,10 @@ export const MESSAGE = {
     DATA: 'DATA',
     GET_DATA: 'GET_DATA',
 } as const;
+
+
+export const SPEAKER = {
+    SPEECH_GAP: -2,
+    OVERLAP: -1,
+} as const;
 // #endregion module

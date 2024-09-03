@@ -9,12 +9,18 @@ export type Speaker = {
     speed: number;
 }
 
+/**
+ * ```
+ * Speaker ID = -2 => speech gap
+ * Speaker ID = -1 => overlap
+ * Speaker ID >= 0 => speaker ID
+ * [speaker_id, start, stop, word_count]
+ * ```
+ */
+export type SpeakerSegment = [number, number, number, number];
+
 export type SpeakersData = {
     labels: string[];
-    // speaker ID = -2 => speech gap
-    // speaker ID = -1 => overlap
-    // speaker ID >= 0 => speaker ID
-    // speaker ID, start, stop, word count
-    segments: [number, number, number, number][];
+    segments: SpeakerSegment[];
 }
 // #endregion exports

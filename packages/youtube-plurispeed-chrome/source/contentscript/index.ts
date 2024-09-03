@@ -4,12 +4,14 @@
         OPTIONS_KEY,
         defaultOptions,
         MESSAGE,
+        SPEAKER,
     } from '~data/constants';
 
     import {
         Options,
         Speaker,
         SpeakersData,
+        SpeakerSegment,
     } from '~data/interfaces';
     // #endregion external
 // #endregion imports
@@ -25,6 +27,8 @@ let speakersData: SpeakersData = {
     labels: [],
     segments: [],
 };
+let dynamicWPM = false;
+let dyanmicWPMValue = 140;
 
 
 const getOptions = async (): Promise<Options> => {
@@ -39,6 +43,30 @@ const getOptions = async (): Promise<Options> => {
     } catch (error) {
         return defaultOptions;
     }
+}
+
+
+function findActiveSegment(
+    segments: SpeakerSegment[],
+    currentTime: number,
+): SpeakerSegment | null {
+    let left = 0;
+    let right = segments.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        const [_, startTime, endTime] = segments[mid];
+
+        if (currentTime >= startTime && currentTime <= endTime) {
+            return segments[mid];
+        } else if (currentTime < startTime) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return null;
 }
 
 
@@ -307,17 +335,46 @@ const togglePluriSpeed = () => {
 
         video.addEventListener('timeupdate', () => {
             try {
+                if (!toggled) {
+                    if (video.playbackRate !== 1) {
+                        video.playbackRate = 1;
+                    }
+                    return;
+                }
+
                 const currentTime = video.currentTime;
 
-                for (const segment of speakersData.segments) {
+                if (dynamicWPM) {
+                    // Handle speed based on dynamicWPMValue
+
+                } else {
+                    // Handle speed based on speakers
+                    const activeSegment = findActiveSegment(
+                        speakersData.segments,
+                        currentTime,
+                    );
+                    if (!activeSegment) {
+                        if (video.playbackRate !== 1) {
+                            video.playbackRate = 1;
+                        }
+                        return;
+                    }
+
                     const [
                         speakerID,
                         start,
                         end,
-                    ] = segment;
+                    ] = activeSegment;
 
                     if (currentTime >= start && currentTime <= end) {
-                        if (speakerID === -1) {
+                        if (speakerID === SPEAKER.SPEECH_GAP) {
+                            if (video.playbackRate !== 1) {
+                                video.playbackRate = 1;
+                            }
+                            return;
+                        }
+
+                        if (speakerID === SPEAKER.OVERLAP) {
                             const overlapSpeed = speakers[speakers.length - 1].speed;
                             if (video.playbackRate !== overlapSpeed) {
                                 video.playbackRate = overlapSpeed;
@@ -329,12 +386,7 @@ const togglePluriSpeed = () => {
                         if (video.playbackRate !== speakerSpeed) {
                             video.playbackRate = speakerSpeed;
                         }
-                        return;
                     }
-                }
-
-                if (video.playbackRate !== 1) {
-                    video.playbackRate = 1;
                 }
             } catch (error) {
                 return;
