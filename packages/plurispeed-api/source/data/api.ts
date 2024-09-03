@@ -8,7 +8,8 @@ export const DiarizationData = z.object({
         z.tuple([
             z.number(), // speaker
             z.number(), // start
-            z.number()  // end
+            z.number(), // end
+            z.number(), // word count
         ]),
     ),
 }).strict();
