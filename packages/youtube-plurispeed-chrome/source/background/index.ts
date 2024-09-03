@@ -1,5 +1,6 @@
 import {
     API_ENDPOINT,
+    MESSAGE,
 } from '~data/constants';
 
 
@@ -8,7 +9,7 @@ chrome.runtime.onMessage.addListener(
     async (message, sender, _sendResponse) => {
         try {
             switch (message.type) {
-                case 'GET_DATA':
+                case MESSAGE.GET_DATA:
                     const tab = sender.tab;
                     const url = tab.url || '';
                     if (!url) {
@@ -46,7 +47,7 @@ chrome.runtime.onMessage.addListener(
                     });
 
                     chrome.tabs.sendMessage(tab.id, {
-                        type: 'DATA',
+                        type: MESSAGE.DATA,
                         speakers,
                         data,
                     });

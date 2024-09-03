@@ -26,6 +26,7 @@
     import {
         OPTIONS_KEY,
         defaultOptions,
+        MESSAGE,
     } from '~data/constants';
 
     import {
@@ -63,6 +64,11 @@ const Popup: React.FC<PopupProperties> = (
     ] = useState(true);
 
     const [
+        activeTab,
+        setActiveTab,
+    ] = useState<chrome.tabs.Tab | null>(null);
+
+    const [
         activated,
         setActivated,
     ] = useState(false);
@@ -80,7 +86,7 @@ const Popup: React.FC<PopupProperties> = (
             setActivated(value => !value);
             const tab = await getActiveTab();
             await chrome.tabs.sendMessage(tab.id, {
-                type: 'TOGGLE',
+                type: MESSAGE.TOGGLE,
             });
         } catch (error) {
             return;
@@ -143,13 +149,16 @@ const Popup: React.FC<PopupProperties> = (
         embeddedButton,
     ]);
 
+
     /** Tab Data */
     useEffect(() => {
         const getTabData = async () => {
             try {
                 const tab = await getActiveTab();
+                setActiveTab(tab);
+
                 const response = await chrome.tabs.sendMessage(tab.id, {
-                    type: 'GET_STATE',
+                    type: MESSAGE.GET_STATE,
                 });
                 if (!response) {
                     return;
@@ -201,43 +210,59 @@ const Popup: React.FC<PopupProperties> = (
                 press alt/option (⌥) + P on a YouTube page to activate plurispeed
             </div>
 
-            <InputSwitch
-                name={`${activated ? 'deactivate' : 'activate'} [⌥ + P]`}
-                checked={activated}
-                atChange={() => {
-                    activate();
-                }}
-                theme={dewiki}
-                style={{
-                    ...inputStyle,
-                }}
-            />
-
-            <InputSwitch
-                name="embedded button"
-                checked={embeddedButton}
-                atChange={() => {
-                    setEmbeddedButton(value => !value);
-                }}
-                theme={dewiki}
-                style={{
-                    ...inputStyle,
-                }}
-            />
-
-            <div>
-                <LinkButton
-                    text="reset"
-                    atClick={() => {
-                        reset();
+            {activeTab
+            && activeTab.url?.includes('youtube.com')
+            && (
+                <>
+                <InputSwitch
+                    name={`${activated ? 'deactivate' : 'activate'} [⌥ + P]`}
+                    checked={activated}
+                    atChange={() => {
+                        activate();
                     }}
                     theme={dewiki}
                     style={{
-                        marginTop: '2rem',
+                        ...inputStyle,
                     }}
-                    inline={true}
                 />
-            </div>
+
+                {activated && (
+                    <>
+                        <InputSwitch
+                            name="embedded button"
+                            checked={embeddedButton}
+                            atChange={() => {
+                                setEmbeddedButton(value => !value);
+                            }}
+                            theme={dewiki}
+                            style={{
+                                ...inputStyle,
+                            }}
+                        />
+
+                        {/* {!embeddedButton && (
+                            <div>
+                                // set speeds for speakers
+                            </div>
+                        )} */}
+                    </>
+                )}
+
+                <div>
+                    <LinkButton
+                        text="reset"
+                        atClick={() => {
+                            reset();
+                        }}
+                        theme={dewiki}
+                        style={{
+                            marginTop: '2rem',
+                        }}
+                        inline={true}
+                    />
+                </div>
+                </>
+            )}
         </StyledPopup>
     );
     // #endregion render

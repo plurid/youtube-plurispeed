@@ -3,10 +3,13 @@
     import {
         OPTIONS_KEY,
         defaultOptions,
+        MESSAGE,
     } from '~data/constants';
 
     import {
         Options,
+        Speaker,
+        SpeakersData,
     } from '~data/interfaces';
     // #endregion external
 // #endregion imports
@@ -14,16 +17,6 @@
 
 
 // #region module
-type Speaker = {
-    id: number;
-    name: string;
-    speed: number;
-}
-type SpeakersData = {
-    labels: string[];
-    segments: [number, number, number][];
-}
-
 let toggled = false;
 let injectedButton = false;
 let requestedData = false;
@@ -114,70 +107,70 @@ const injectButton = () => {
         menu.setAttribute('role', 'menu');
 
 
-        {
-            const WPM = 140;
+        // {
+        //     const WPM = 140;
 
-            const wpmMap = [
-                { label: 'Very Slow', speedRange: [80, 100] },
-                { label: 'Slow', speedRange: [100, 130] },
-                { label: 'Normal', speedRange: [130, 160] },
-                { label: 'Fast', speedRange: [160, 200] },
-                { label: 'Very Fast', speedRange: [200, 240] }
-            ];
+        //     const wpmMap = [
+        //         { label: 'Very Slow', speedRange: [80, 100] },
+        //         { label: 'Slow', speedRange: [100, 130] },
+        //         { label: 'Normal', speedRange: [130, 160] },
+        //         { label: 'Fast', speedRange: [160, 200] },
+        //         { label: 'Very Fast', speedRange: [200, 240] }
+        //     ];
 
-            const wpmSpeed = wpmMap.find(wpm => {
-                const [min, max] = wpm.speedRange;
-                return WPM >= min && WPM < max;
-            });
+        //     const wpmSpeed = wpmMap.find(wpm => {
+        //         const [min, max] = wpm.speedRange;
+        //         return WPM >= min && WPM < max;
+        //     });
 
-            const menuItem = document.createElement('div');
-            menuItem.className = 'ytp-menuitem';
-            menuItem.setAttribute('tabindex', '0');
-            menuItem.setAttribute('role', 'menuitemcheckbox');
-            menuItem.setAttribute('aria-checked', 'false');
-            menuItem.style.pointerEvents = 'none';
-            const label = document.createElement('div');
-            label.className = 'ytp-menuitem-label';
-            label.innerText = `Dynamic ${WPM} WPM · ${wpmSpeed.label}`;
-            label.style.textAlign = 'center';
-            const content = document.createElement('div');
-            content.className = 'ytp-menuitem-content';
-            const toggle = document.createElement('div');
-            toggle.className = 'ytp-menuitem-toggle-checkbox';
-            content.appendChild(toggle);
-            menuItem.appendChild(label);
-            menuItem.appendChild(content);
+        //     const menuItem = document.createElement('div');
+        //     menuItem.className = 'ytp-menuitem';
+        //     menuItem.setAttribute('tabindex', '0');
+        //     menuItem.setAttribute('role', 'menuitemcheckbox');
+        //     menuItem.setAttribute('aria-checked', 'false');
+        //     menuItem.style.pointerEvents = 'none';
+        //     const label = document.createElement('div');
+        //     label.className = 'ytp-menuitem-label';
+        //     label.innerText = `Dynamic ${WPM} WPM · ${wpmSpeed.label}`;
+        //     label.style.textAlign = 'center';
+        //     const content = document.createElement('div');
+        //     content.className = 'ytp-menuitem-content';
+        //     const toggle = document.createElement('div');
+        //     toggle.className = 'ytp-menuitem-toggle-checkbox';
+        //     content.appendChild(toggle);
+        //     menuItem.appendChild(label);
+        //     menuItem.appendChild(content);
 
-            const speedSliderComponent = document.createElement('div');
-            speedSliderComponent.className = 'ytp-speedslider-component';
-            speedSliderComponent.style.height = '50px';
+        //     const speedSliderComponent = document.createElement('div');
+        //     speedSliderComponent.className = 'ytp-speedslider-component';
+        //     speedSliderComponent.style.height = '50px';
 
-            const sliderSection = document.createElement('div');
-            sliderSection.className = 'ytp-slider-section';
-            sliderSection.setAttribute('role', 'slider');
-            sliderSection.setAttribute('tabindex', '0');
-            sliderSection.setAttribute('aria-valuetext', '1');
-            sliderSection.setAttribute('aria-valuenow', '1');
-            sliderSection.setAttribute('aria-valuemin', '0.25');
-            sliderSection.setAttribute('aria-valuemax', '2');
+        //     const sliderSection = document.createElement('div');
+        //     sliderSection.className = 'ytp-slider-section';
+        //     sliderSection.setAttribute('role', 'slider');
+        //     sliderSection.setAttribute('tabindex', '0');
+        //     sliderSection.setAttribute('aria-valuetext', '1');
+        //     sliderSection.setAttribute('aria-valuenow', '1');
+        //     sliderSection.setAttribute('aria-valuemin', '0.25');
+        //     sliderSection.setAttribute('aria-valuemax', '2');
 
-            const slider = document.createElement('div');
-            slider.className = 'ytp-slider ytp-speedslider';
-            slider.style.touchAction = 'none';
-            slider.setAttribute('draggable', 'true');
+        //     const slider = document.createElement('div');
+        //     slider.className = 'ytp-slider ytp-speedslider';
+        //     slider.style.touchAction = 'none';
+        //     slider.setAttribute('draggable', 'true');
 
-            const sliderHandle = document.createElement('div');
-            sliderHandle.className = 'ytp-slider-handle';
-            sliderHandle.style.left = '50px';
+        //     const sliderHandle = document.createElement('div');
+        //     sliderHandle.className = 'ytp-slider-handle';
+        //     sliderHandle.style.left = '50px';
 
-            slider.appendChild(sliderHandle);
-            sliderSection.appendChild(slider);
-            speedSliderComponent.appendChild(sliderSection);
+        //     slider.appendChild(sliderHandle);
+        //     sliderSection.appendChild(slider);
+        //     speedSliderComponent.appendChild(sliderSection);
 
 
-            menu.appendChild(menuItem);
-            menu.appendChild(speedSliderComponent);
-        }
+        //     menu.appendChild(menuItem);
+        //     menu.appendChild(speedSliderComponent);
+        // }
 
 
         for (const speaker of speakers) {
@@ -287,7 +280,7 @@ const togglePluriSpeed = () => {
             requestedData = true;
 
             chrome.runtime.sendMessage({
-                type: 'GET_DATA',
+                type: MESSAGE.GET_DATA,
             });
         }
 
@@ -325,16 +318,24 @@ const togglePluriSpeed = () => {
 
                     if (currentTime >= start && currentTime <= end) {
                         if (speakerID === -1) {
-                            video.playbackRate = speakers[speakers.length - 1].speed;
+                            const overlapSpeed = speakers[speakers.length - 1].speed;
+                            if (video.playbackRate !== overlapSpeed) {
+                                video.playbackRate = overlapSpeed;
+                            }
                             return;
                         }
 
-                        video.playbackRate = speakers[speakerID].speed;
+                        const speakerSpeed = speakers[speakerID].speed;
+                        if (video.playbackRate !== speakerSpeed) {
+                            video.playbackRate = speakerSpeed;
+                        }
                         return;
                     }
                 }
 
-                video.playbackRate = 1;
+                if (video.playbackRate !== 1) {
+                    video.playbackRate = 1;
+                }
             } catch (error) {
                 return;
             }
@@ -374,15 +375,15 @@ const main = async () => {
         chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
             try {
                 switch (message.type) {
-                    case 'TOGGLE':
+                    case MESSAGE.TOGGLE:
                         togglePluriSpeed();
                         break;
-                    case 'GET_STATE':
+                    case MESSAGE.GET_STATE:
                         sendResponse({
                             toggled,
                         });
                         break;
-                    case 'DATA':
+                    case MESSAGE.DATA:
                         speakers = message.speakers;
                         speakersData = message.data;
                         break;

@@ -21,4 +21,12 @@ export const defaultOptions: Options = {
 
 
 export const OPTIONS_KEY = 'youtubePluriSpeedOptions';
+
+
+export const MESSAGE = {
+    TOGGLE: 'TOGGLE',
+    GET_STATE: 'GET_STATE',
+    DATA: 'DATA',
+    GET_DATA: 'GET_DATA',
+} as const;
 // #endregion module
