@@ -77,6 +77,16 @@ const Popup: React.FC<PopupProperties> = (
     ] = useState<Speaker[]>([]);
 
     const [
+        speechSpeedActive,
+        setSpeechSpeedActive,
+    ] = useState(false);
+
+    const [
+        speechWPM,
+        setSpeechWPM,
+    ] = useState(160);
+
+    const [
         activated,
         setActivated,
     ] = useState(false);
@@ -275,60 +285,120 @@ const Popup: React.FC<PopupProperties> = (
 
                         {activeTabSpeakers.length > 0 && (
                             <div>
-                                <h2
-                                    style={{
-                                        textAlign: 'center',
-                                        fontSize: '1.1rem',
+                                <InputSwitch
+                                    name="speech speed"
+                                    checked={speechSpeedActive}
+                                    atChange={() => {
+                                        setSpeechSpeedActive(value => !value);
                                     }}
-                                >
-                                    speakers
-                                </h2>
+                                    theme={dewiki}
+                                    style={{
+                                        ...inputStyle,
+                                        marginBottom: '1.4rem',
+                                    }}
+                                />
 
-                                {activeTabSpeakers.map(speaker => {
-                                    return (
+                                {speechSpeedActive === true && (
+                                    <div
+                                        style={{
+                                            padding: '0 1rem',
+                                        }}
+                                    >
                                         <div
-                                            key={speaker.id}
                                             style={{
                                                 ...sliderStyle,
                                             }}
                                         >
                                             <div>
-                                                {speaker.name}
+                                                {speechWPM} WPM
                                             </div>
 
                                             <Slider
-                                                name={speaker.name}
-                                                value={speaker.speed}
+                                                name={'words per minute'}
+                                                value={speechWPM}
                                                 atChange={(value) => {
-                                                    const newSpeakers = activeTabSpeakers.map(activeTabSpeaker => {
-                                                        if (activeTabSpeaker.id === speaker.id) {
-                                                            return {
-                                                                ...activeTabSpeaker,
-                                                                speed: value,
-                                                            };
-                                                        }
-
-                                                        return {
-                                                            ...activeTabSpeaker,
-                                                        };
-                                                    });
-
-                                                    setActiveTabSpeakers(newSpeakers);
-                                                    chrome.tabs.sendMessage(activeTab.id, {
-                                                        type: MESSAGE.UPDATE_SPEAKERS,
-                                                        speakers: newSpeakers,
-                                                    });
+                                                    setSpeechWPM(value);
                                                 }}
-                                                min={0}
-                                                max={1}
-                                                step={0.1}
-                                                width={150}
+                                                min={10}
+                                                max={360}
+                                                step={10}
+                                                defaultValue={160}
+                                                width={120}
                                                 theme={dewiki}
                                                 level={2}
                                             />
                                         </div>
-                                    );
-                                })}
+                                    </div>
+                                )}
+
+                                {speechSpeedActive === false && (
+                                    <div
+                                        style={{
+                                            padding: '0 1rem',
+                                        }}
+                                    >
+                                        <h2
+                                            style={{
+                                                textAlign: 'center',
+                                                fontSize: '1.1rem',
+                                            }}
+                                        >
+                                            speakers
+                                        </h2>
+
+                                        {activeTabSpeakers.map(speaker => {
+                                            return (
+                                                <div
+                                                    key={speaker.id}
+                                                    style={{
+                                                        ...sliderStyle,
+                                                    }}
+                                                >
+                                                    <div>
+                                                        {speaker.name}
+                                                        <br />
+                                                        {speaker.speed === 1
+                                                            ? 'normal'
+                                                            : (speaker.speed).toFixed(1)
+                                                        }
+                                                    </div>
+
+                                                    <Slider
+                                                        name={speaker.name}
+                                                        value={speaker.speed}
+                                                        atChange={(value) => {
+                                                            const newSpeakers = activeTabSpeakers.map(activeTabSpeaker => {
+                                                                if (activeTabSpeaker.id === speaker.id) {
+                                                                    return {
+                                                                        ...activeTabSpeaker,
+                                                                        speed: value,
+                                                                    };
+                                                                }
+
+                                                                return {
+                                                                    ...activeTabSpeaker,
+                                                                };
+                                                            });
+
+                                                            setActiveTabSpeakers(newSpeakers);
+                                                            chrome.tabs.sendMessage(activeTab.id, {
+                                                                type: MESSAGE.UPDATE_SPEAKERS,
+                                                                speakers: newSpeakers,
+                                                            });
+                                                        }}
+                                                        min={0.1}
+                                                        max={2.5}
+                                                        step={0.1}
+                                                        defaultValue={1}
+                                                        width={150}
+                                                        theme={dewiki}
+                                                        level={2}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </>
