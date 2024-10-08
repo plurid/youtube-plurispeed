@@ -185,10 +185,14 @@ const Popup: React.FC<PopupProperties> = (
                 const {
                     toggled,
                     speakers,
+                    speechSpeedActive,
+                    speechWPM,
                 } = response;
 
                 setActivated(!!toggled);
                 setActiveTabSpeakers(speakers);
+                setSpeechSpeedActive(speechSpeedActive);
+                setSpeechWPM(speechWPM);
             } catch (error) {
                 return;
             }

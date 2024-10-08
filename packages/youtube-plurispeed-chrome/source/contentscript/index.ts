@@ -27,8 +27,8 @@ let speakersData: SpeakersData = {
     labels: [],
     segments: [],
 };
-let dynamicWPM = false;
-let dyanmicWPMValue = 140;
+let speechSpeedActive = false;
+let speechWPM = 140;
 
 const SPEED = {
     NORMAL: 1,
@@ -72,13 +72,6 @@ function findActiveSegment(
     }
 
     return null;
-}
-
-function getAdjustedSpeedIndex(
-    currentTime: number,
-    segmentDuration = 3,
-) {
-    return Math.floor(currentTime / segmentDuration);
 }
 
 
@@ -362,10 +355,12 @@ const togglePluriSpeed = () => {
 
                 const currentTime = video.currentTime;
 
-                if (dynamicWPM) {
-                    // let index = getAdjustedSpeedIndex(currentTime);
-                    // let playbackSpeed = adjustedSpeeds[index];
+                if (speechSpeedActive) {
+                    // const index = getAdjustedSpeedIndex(currentTime);
+                    // const playbackSpeed = adjustedSpeeds[index];
                     // setVideoPlaybackRate(playbackSpeed);
+                    // const smoothPlaybackSpeed = getInterpolatedSpeed(currentTime);
+                    // setVideoPlaybackRate(smoothPlaybackSpeed);
                 } else {
                     // Handle speed based on speakers
                     const activeSegment = findActiveSegment(
@@ -445,6 +440,8 @@ const main = async () => {
                         sendResponse({
                             toggled,
                             speakers,
+                            speechSpeedActive,
+                            speechWPM,
                         });
                         break;
                     case MESSAGE.DATA:
@@ -455,8 +452,8 @@ const main = async () => {
                         speakers = message.speakers;
                         break;
                     case MESSAGE.UPDATE_SPEECH_SPEED:
-                        dynamicWPM = message.speechSpeedActive;
-                        dyanmicWPMValue = message.speechWPM;
+                        speechSpeedActive = message.speechSpeedActive;
+                        speechWPM = message.speechWPM;
                         break;
                 }
             } catch (error) {
