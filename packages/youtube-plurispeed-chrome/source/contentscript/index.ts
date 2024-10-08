@@ -333,12 +333,18 @@ const togglePluriSpeed = () => {
             return;
         }
 
+        const setVideoPlaybackRate = (playbackRate: number) => {
+            if (video.playbackRate === playbackRate) {
+                return;
+            }
+
+            video.playbackRate = playbackRate;
+        }
+
         video.addEventListener('timeupdate', () => {
             try {
                 if (!toggled) {
-                    if (video.playbackRate !== 1) {
-                        video.playbackRate = 1;
-                    }
+                    setVideoPlaybackRate(1);
                     return;
                 }
 
@@ -354,9 +360,7 @@ const togglePluriSpeed = () => {
                         currentTime,
                     );
                     if (!activeSegment) {
-                        if (video.playbackRate !== 1) {
-                            video.playbackRate = 1;
-                        }
+                        setVideoPlaybackRate(1);
                         return;
                     }
 
@@ -368,24 +372,18 @@ const togglePluriSpeed = () => {
 
                     if (currentTime >= start && currentTime <= end) {
                         if (speakerID === SPEAKER.SPEECH_GAP) {
-                            if (video.playbackRate !== 1) {
-                                video.playbackRate = 1;
-                            }
+                            setVideoPlaybackRate(1);
                             return;
                         }
 
                         if (speakerID === SPEAKER.OVERLAP) {
                             const overlapSpeed = speakers[speakers.length - 1].speed;
-                            if (video.playbackRate !== overlapSpeed) {
-                                video.playbackRate = overlapSpeed;
-                            }
+                            setVideoPlaybackRate(overlapSpeed);
                             return;
                         }
 
                         const speakerSpeed = speakers[speakerID].speed;
-                        if (video.playbackRate !== speakerSpeed) {
-                            video.playbackRate = speakerSpeed;
-                        }
+                        setVideoPlaybackRate(speakerSpeed);
                     }
                 }
             } catch (error) {
