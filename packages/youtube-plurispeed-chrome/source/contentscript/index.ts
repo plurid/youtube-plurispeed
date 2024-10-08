@@ -30,6 +30,11 @@ let speakersData: SpeakersData = {
 let dynamicWPM = false;
 let dyanmicWPMValue = 140;
 
+const SPEED = {
+    NORMAL: 1,
+};
+
+
 
 const getOptions = async (): Promise<Options> => {
     try {
@@ -344,7 +349,7 @@ const togglePluriSpeed = () => {
         video.addEventListener('timeupdate', () => {
             try {
                 if (!toggled) {
-                    setVideoPlaybackRate(1);
+                    setVideoPlaybackRate(SPEED.NORMAL);
                     return;
                 }
 
@@ -360,7 +365,7 @@ const togglePluriSpeed = () => {
                         currentTime,
                     );
                     if (!activeSegment) {
-                        setVideoPlaybackRate(1);
+                        setVideoPlaybackRate(SPEED.NORMAL);
                         return;
                     }
 
@@ -372,7 +377,7 @@ const togglePluriSpeed = () => {
 
                     if (currentTime >= start && currentTime <= end) {
                         if (speakerID === SPEAKER.SPEECH_GAP) {
-                            setVideoPlaybackRate(1);
+                            setVideoPlaybackRate(SPEED.NORMAL);
                             return;
                         }
 
