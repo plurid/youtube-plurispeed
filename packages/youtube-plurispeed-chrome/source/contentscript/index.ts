@@ -74,6 +74,13 @@ function findActiveSegment(
     return null;
 }
 
+function getAdjustedSpeedIndex(
+    currentTime: number,
+    segmentDuration = 3,
+) {
+    return Math.floor(currentTime / segmentDuration);
+}
+
 
 const injectButton = () => {
     if (injectedButton) {
@@ -356,8 +363,9 @@ const togglePluriSpeed = () => {
                 const currentTime = video.currentTime;
 
                 if (dynamicWPM) {
-                    // Handle speed based on dynamicWPMValue
-
+                    // let index = getAdjustedSpeedIndex(currentTime);
+                    // let playbackSpeed = adjustedSpeeds[index];
+                    // setVideoPlaybackRate(playbackSpeed);
                 } else {
                     // Handle speed based on speakers
                     const activeSegment = findActiveSegment(
