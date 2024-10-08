@@ -289,7 +289,14 @@ const Popup: React.FC<PopupProperties> = (
                                     name="speech speed"
                                     checked={speechSpeedActive}
                                     atChange={() => {
-                                        setSpeechSpeedActive(value => !value);
+                                        const newSpeechSpeedActive = !speechSpeedActive;
+                                        setSpeechSpeedActive(newSpeechSpeedActive);
+
+                                        chrome.tabs.sendMessage(activeTab.id, {
+                                            type: MESSAGE.UPDATE_SPEECH_SPEED,
+                                            speechSpeedActive: newSpeechSpeedActive,
+                                            speechWPM,
+                                        });
                                     }}
                                     theme={dewiki}
                                     style={{
@@ -318,6 +325,12 @@ const Popup: React.FC<PopupProperties> = (
                                                 value={speechWPM}
                                                 atChange={(value) => {
                                                     setSpeechWPM(value);
+
+                                                    chrome.tabs.sendMessage(activeTab.id, {
+                                                        type: MESSAGE.UPDATE_SPEECH_SPEED,
+                                                        speechSpeedActive,
+                                                        speechWPM: value,
+                                                    });
                                                 }}
                                                 min={10}
                                                 max={360}

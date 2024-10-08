@@ -443,6 +443,10 @@ const main = async () => {
                     case MESSAGE.UPDATE_SPEAKERS:
                         speakers = message.speakers;
                         break;
+                    case MESSAGE.UPDATE_SPEECH_SPEED:
+                        dynamicWPM = message.speechSpeedActive;
+                        dyanmicWPMValue = message.speechWPM;
+                        break;
                 }
             } catch (error) {
                 return;

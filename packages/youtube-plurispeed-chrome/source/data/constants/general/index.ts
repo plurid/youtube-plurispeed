@@ -30,6 +30,7 @@ export const MESSAGE = {
     GET_DATA: 'GET_DATA',
     BG_P_DATA: 'DATA',
     UPDATE_SPEAKERS: 'UPDATE_SPEAKERS',
+    UPDATE_SPEECH_SPEED: 'UPDATE_SPEECH_SPEED',
 } as const;
 
 
