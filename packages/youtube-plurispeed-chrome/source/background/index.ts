@@ -52,6 +52,11 @@ chrome.runtime.onMessage.addListener(
                         data,
                     });
 
+                    chrome.runtime.sendMessage({
+                        type: MESSAGE.BG_P_DATA,
+                        speakers,
+                    });
+
                     return;
             }
         } catch (error) {

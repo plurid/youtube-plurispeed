@@ -31,4 +31,13 @@ export const StyledPopup = styled.div`
 export const inputStyle = {
     width: '250px',
 };
+
+
+export const sliderStyle = {
+    display: 'flex',
+    gap: '2rem',
+    justifyContent: 'space-between',
+    width: '100%',
+    margin: '8px 0',
+};
 // #endregion module

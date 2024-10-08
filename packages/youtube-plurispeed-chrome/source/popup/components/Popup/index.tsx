@@ -14,6 +14,7 @@
     import {
         InputSwitch,
         LinkButton,
+        Slider,
     } from '@plurid/plurid-ui-components-react';
     // #endregion libraries
 
@@ -21,6 +22,7 @@
     // #region external
     import {
         Options,
+        Speaker,
     } from '~data/interfaces';
 
     import {
@@ -39,6 +41,7 @@
     import {
         StyledPopup,
         inputStyle,
+        sliderStyle,
     } from './styled';
     // #endregion internal
 // #region imports
@@ -67,6 +70,11 @@ const Popup: React.FC<PopupProperties> = (
         activeTab,
         setActiveTab,
     ] = useState<chrome.tabs.Tab | null>(null);
+
+    const [
+        activeTabSpeakers,
+        setActiveTabSpeakers,
+    ] = useState<Speaker[]>([]);
 
     const [
         activated,
@@ -166,15 +174,40 @@ const Popup: React.FC<PopupProperties> = (
 
                 const {
                     toggled,
+                    speakers,
                 } = response;
 
                 setActivated(!!toggled);
+                setActiveTabSpeakers(speakers);
             } catch (error) {
                 return;
             }
         }
 
         getTabData();
+    }, [
+        activated,
+    ]);
+
+    /** Listen Data */
+    useEffect(() => {
+        const listenData = async (
+            request: any, sender: any, sendResponse: any,
+        ) => {
+            try {
+                if (request.type === MESSAGE.BG_P_DATA) {
+                    setActiveTabSpeakers(request.speakers);
+                }
+            } catch (error) {
+                return;
+            }
+        }
+
+        chrome.runtime.onMessage.addListener(listenData);
+
+        return () => {
+            chrome.runtime.onMessage.removeListener(listenData);
+        }
     }, []);
 
     /** Mount */
@@ -240,11 +273,64 @@ const Popup: React.FC<PopupProperties> = (
                             }}
                         />
 
-                        {/* {!embeddedButton && (
+                        {activeTabSpeakers.length > 0 && (
                             <div>
-                                // set speeds for speakers
+                                <h2
+                                    style={{
+                                        textAlign: 'center',
+                                        fontSize: '1.1rem',
+                                    }}
+                                >
+                                    speakers
+                                </h2>
+
+                                {activeTabSpeakers.map(speaker => {
+                                    return (
+                                        <div
+                                            key={speaker.id}
+                                            style={{
+                                                ...sliderStyle,
+                                            }}
+                                        >
+                                            <div>
+                                                {speaker.name}
+                                            </div>
+
+                                            <Slider
+                                                name={speaker.name}
+                                                value={speaker.speed}
+                                                atChange={(value) => {
+                                                    const newSpeakers = activeTabSpeakers.map(activeTabSpeaker => {
+                                                        if (activeTabSpeaker.id === speaker.id) {
+                                                            return {
+                                                                ...activeTabSpeaker,
+                                                                speed: value,
+                                                            };
+                                                        }
+
+                                                        return {
+                                                            ...activeTabSpeaker,
+                                                        };
+                                                    });
+
+                                                    setActiveTabSpeakers(newSpeakers);
+                                                    chrome.tabs.sendMessage(activeTab.id, {
+                                                        type: MESSAGE.UPDATE_SPEAKERS,
+                                                        speakers: newSpeakers,
+                                                    });
+                                                }}
+                                                min={0}
+                                                max={1}
+                                                step={0.1}
+                                                width={150}
+                                                theme={dewiki}
+                                                level={2}
+                                            />
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        )} */}
+                        )}
                     </>
                 )}
 

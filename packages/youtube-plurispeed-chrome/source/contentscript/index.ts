@@ -433,11 +433,15 @@ const main = async () => {
                     case MESSAGE.GET_STATE:
                         sendResponse({
                             toggled,
+                            speakers,
                         });
                         break;
                     case MESSAGE.DATA:
                         speakers = message.speakers;
                         speakersData = message.data;
+                        break;
+                    case MESSAGE.UPDATE_SPEAKERS:
+                        speakers = message.speakers;
                         break;
                 }
             } catch (error) {

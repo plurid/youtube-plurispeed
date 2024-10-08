@@ -28,6 +28,8 @@ export const MESSAGE = {
     GET_STATE: 'GET_STATE',
     DATA: 'DATA',
     GET_DATA: 'GET_DATA',
+    BG_P_DATA: 'DATA',
+    UPDATE_SPEAKERS: 'UPDATE_SPEAKERS',
 } as const;
 
 
