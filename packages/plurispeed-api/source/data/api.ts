@@ -12,6 +12,9 @@ export const DiarizationData = z.object({
             z.number(), // word count
         ]),
     ),
+    wpmIntervals: z.array(
+        z.number(),
+    ),
 }).strict();
 
 const url = z.string().trim().url();
