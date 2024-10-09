@@ -22,5 +22,6 @@ export type SpeakerSegment = [number, number, number, number];
 export type SpeakersData = {
     labels: string[];
     segments: SpeakerSegment[];
+    wpmIntervals: number[];
 }
 // #endregion exports

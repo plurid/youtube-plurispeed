@@ -26,6 +26,7 @@ let speakers: Speaker[] = [];
 let speakersData: SpeakersData = {
     labels: [],
     segments: [],
+    wpmIntervals: [],
 };
 let speechSpeedActive = false;
 let speechWPM = 140;
@@ -34,6 +35,28 @@ const SPEED = {
     NORMAL: 1,
 };
 
+
+function computeWPMPlayback(currentTime: number) {
+    if (speakersData.wpmIntervals.length === 0) {
+        return 1;
+    }
+
+    const intervalDuration = 30; // seconds
+    const totalIntervals = speakersData.wpmIntervals.length;
+    const intervalIndex = Math.floor(currentTime / intervalDuration);
+
+    if (intervalIndex < 0 || intervalIndex >= totalIntervals) {
+        // Out of range.
+        return 1;
+    }
+
+    const actualWPM = speakersData.wpmIntervals[intervalIndex];
+    if (actualWPM === 0) {
+        return 1;
+    }
+
+    return speechWPM / actualWPM;
+}
 
 
 const getOptions = async (): Promise<Options> => {
@@ -356,11 +379,9 @@ const togglePluriSpeed = () => {
                 const currentTime = video.currentTime;
 
                 if (speechSpeedActive) {
-                    // const index = getAdjustedSpeedIndex(currentTime);
-                    // const playbackSpeed = adjustedSpeeds[index];
-                    // setVideoPlaybackRate(playbackSpeed);
-                    // const smoothPlaybackSpeed = getInterpolatedSpeed(currentTime);
-                    // setVideoPlaybackRate(smoothPlaybackSpeed);
+                    // Handle speed based on WPM
+                    const playbackRate = computeWPMPlayback(currentTime);
+                    setVideoPlaybackRate(playbackRate);
                 } else {
                     // Handle speed based on speakers
                     const activeSegment = findActiveSegment(
