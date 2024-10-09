@@ -351,7 +351,7 @@ const Popup: React.FC<PopupProperties> = (
                                 {speechSpeedActive === false && (
                                     <div
                                         style={{
-                                            padding: '0 1rem',
+                                            paddingLeft: '1rem',
                                         }}
                                     >
                                         <h2
@@ -371,8 +371,18 @@ const Popup: React.FC<PopupProperties> = (
                                                         ...sliderStyle,
                                                     }}
                                                 >
-                                                    <div>
-                                                        {speaker.name}
+                                                    <div
+                                                        style={{
+                                                            minWidth: '60px',
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                wordBreak: 'break-all',
+                                                            }}
+                                                        >
+                                                            {speaker.name}
+                                                        </span>
                                                         <br />
                                                         {speaker.speed === 1
                                                             ? 'normal'
@@ -407,7 +417,7 @@ const Popup: React.FC<PopupProperties> = (
                                                         max={2.5}
                                                         step={0.1}
                                                         defaultValue={1}
-                                                        width={150}
+                                                        width={100}
                                                         theme={dewiki}
                                                         level={2}
                                                     />
