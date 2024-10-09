@@ -36,29 +36,6 @@ const SPEED = {
 };
 
 
-function computeWPMPlayback(currentTime: number) {
-    if (speakersData.wpmIntervals.length === 0) {
-        return 1;
-    }
-
-    const intervalDuration = 30; // seconds
-    const totalIntervals = speakersData.wpmIntervals.length;
-    const intervalIndex = Math.floor(currentTime / intervalDuration);
-
-    if (intervalIndex < 0 || intervalIndex >= totalIntervals) {
-        // Out of range.
-        return 1;
-    }
-
-    const actualWPM = speakersData.wpmIntervals[intervalIndex];
-    if (actualWPM === 0) {
-        return 1;
-    }
-
-    return speechWPM / actualWPM;
-}
-
-
 const getOptions = async (): Promise<Options> => {
     try {
         const options = await chrome.storage.local.get(OPTIONS_KEY)
@@ -95,6 +72,28 @@ function findActiveSegment(
     }
 
     return null;
+}
+
+function computeWPMPlayback(currentTime: number) {
+    if (speakersData.wpmIntervals.length === 0) {
+        return 1;
+    }
+
+    const intervalDuration = 30; // seconds
+    const totalIntervals = speakersData.wpmIntervals.length;
+    const intervalIndex = Math.floor(currentTime / intervalDuration);
+
+    if (intervalIndex < 0 || intervalIndex >= totalIntervals) {
+        // Out of range.
+        return 1;
+    }
+
+    const actualWPM = speakersData.wpmIntervals[intervalIndex];
+    if (actualWPM === 0) {
+        return 1;
+    }
+
+    return speechWPM / actualWPM;
 }
 
 
