@@ -448,6 +448,11 @@ const Popup: React.FC<PopupProperties> = (
                     atClick={() => {
                         requestDiarization();
                     }}
+                    theme={dewiki}
+                    level={2}
+                    style={{
+                        marginTop: '2rem',
+                    }}
                 />
 
                 <div>
