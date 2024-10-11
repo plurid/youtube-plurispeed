@@ -9,7 +9,32 @@ chrome.runtime.onMessage.addListener(
     async (message, sender, _sendResponse) => {
         try {
             switch (message.type) {
-                case MESSAGE.GET_DATA:
+                case MESSAGE.REQUEST_DIARIZATION: {
+                    const tab = sender.tab;
+                    const url = tab.url || '';
+                    if (!url) {
+                        return;
+                    }
+
+                    const request = await fetch(API_ENDPOINT + '/request-diarization', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            url,
+                        }),
+                    });
+                    const {
+                        status,
+                    } = await request.json();
+                    if (!status) {
+                        return;
+                    }
+
+                    return;
+                }
+                case MESSAGE.GET_DATA: {
                     const tab = sender.tab;
                     const url = tab.url || '';
                     if (!url) {
@@ -58,6 +83,7 @@ chrome.runtime.onMessage.addListener(
                     });
 
                     return;
+                }
             }
         } catch (error) {
             return;

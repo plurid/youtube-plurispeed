@@ -13,6 +13,7 @@
 
     import {
         InputSwitch,
+        PureButton,
         LinkButton,
         Slider,
     } from '@plurid/plurid-ui-components-react';
@@ -105,6 +106,17 @@ const Popup: React.FC<PopupProperties> = (
             const tab = await getActiveTab();
             await chrome.tabs.sendMessage(tab.id, {
                 type: MESSAGE.TOGGLE,
+            });
+        } catch (error) {
+            return;
+        }
+    }
+
+    const requestDiarization = async () => {
+        try {
+            const tab = await getActiveTab();
+            await chrome.tabs.sendMessage(tab.id, {
+                type: MESSAGE.REQUEST_DIARIZATION,
             });
         } catch (error) {
             return;
@@ -430,6 +442,13 @@ const Popup: React.FC<PopupProperties> = (
                         )}
                     </>
                 )}
+
+                <PureButton
+                    text="Request Diarization"
+                    atClick={() => {
+                        requestDiarization();
+                    }}
+                />
 
                 <div>
                     <LinkButton
