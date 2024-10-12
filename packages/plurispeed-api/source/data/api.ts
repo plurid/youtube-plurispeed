@@ -26,6 +26,11 @@ export const APIGetDiarization = z.object({
 
 export const APIGetDiarizationResponse = z.object({
     status: z.boolean(),
+    /**
+     * status: false -> no diarization
+     * status: true, data undefined -> diarization processing
+     * status: true, data defined -> diarization processed
+     */
     data: DiarizationData.optional(),
 }).strict();
 
