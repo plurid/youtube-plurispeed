@@ -45,6 +45,12 @@ export default async function handler(
             return;
         }
 
+        if (diarization.status === 'processing') {
+            response.json({
+                status: true,
+            });
+            return;
+        }
 
         response.json({
             status: true,
