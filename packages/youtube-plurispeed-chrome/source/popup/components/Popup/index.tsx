@@ -211,6 +211,14 @@ const Popup: React.FC<PopupProperties> = (
                     speechWPM,
                 } = response;
 
+                if (speakers.length === 0) {
+                    setDataExists(false);
+                }
+
+                if (toggled) {
+                    setDataRequested(true);
+                }
+
                 setActivated(!!toggled);
                 setActiveTabSpeakers(speakers);
                 setSpeechSpeedActive(speechSpeedActive);
