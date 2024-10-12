@@ -55,6 +55,9 @@ chrome.runtime.onMessage.addListener(
                         data,
                     } = await request.json();
                     if (!status) {
+                        chrome.runtime.sendMessage({
+                            type: MESSAGE.BG_P_NO_DATA,
+                        });
                         return;
                     }
 

@@ -68,6 +68,16 @@ const Popup: React.FC<PopupProperties> = (
     ] = useState(true);
 
     const [
+        dataRequested,
+        setDataRequested,
+    ] = useState(false);
+
+    const [
+        dataExists,
+        setDataExists,
+    ] = useState<boolean | null>(null);
+
+    const [
         activeTab,
         setActiveTab,
     ] = useState<chrome.tabs.Tab | null>(null);
@@ -221,8 +231,16 @@ const Popup: React.FC<PopupProperties> = (
             request: any, sender: any, sendResponse: any,
         ) => {
             try {
-                if (request.type === MESSAGE.BG_P_DATA) {
-                    setActiveTabSpeakers(request.speakers);
+                switch (request.type) {
+                    case MESSAGE.BG_P_DATA:
+                        setDataRequested(true);
+                        setDataExists(true);
+                        setActiveTabSpeakers(request.speakers);
+                        break;
+                    case MESSAGE.BG_P_NO_DATA:
+                        setDataRequested(true);
+                        setDataExists(false);
+                        break;
                 }
             } catch (error) {
                 return;
@@ -443,17 +461,20 @@ const Popup: React.FC<PopupProperties> = (
                     </>
                 )}
 
-                <PureButton
-                    text="Request Diarization"
-                    atClick={() => {
-                        requestDiarization();
-                    }}
-                    theme={dewiki}
-                    level={2}
-                    style={{
-                        marginTop: '2rem',
-                    }}
-                />
+                {dataRequested &&
+                dataExists === false && (
+                    <PureButton
+                        text="Request Diarization"
+                        atClick={() => {
+                            requestDiarization();
+                        }}
+                        theme={dewiki}
+                        level={2}
+                        style={{
+                            marginTop: '2rem',
+                        }}
+                    />
+                )}
 
                 <div>
                     <LinkButton
