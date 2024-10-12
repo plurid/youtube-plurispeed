@@ -78,6 +78,11 @@ const Popup: React.FC<PopupProperties> = (
     ] = useState<boolean | null>(null);
 
     const [
+        dataProcessing,
+        setDataProcessing,
+    ] = useState<boolean | null>(null);
+
+    const [
         activeTab,
         setActiveTab,
     ] = useState<chrome.tabs.Tab | null>(null);
@@ -243,11 +248,18 @@ const Popup: React.FC<PopupProperties> = (
                     case MESSAGE.BG_P_DATA:
                         setDataRequested(true);
                         setDataExists(true);
+                        setDataProcessing(false);
                         setActiveTabSpeakers(request.speakers);
                         break;
                     case MESSAGE.BG_P_NO_DATA:
                         setDataRequested(true);
                         setDataExists(false);
+                        setDataProcessing(false);
+                        break;
+                    case MESSAGE.BG_P_PROCESSING:
+                        setDataRequested(true);
+                        setDataExists(false);
+                        setDataProcessing(true);
                         break;
                 }
             } catch (error) {
@@ -470,7 +482,8 @@ const Popup: React.FC<PopupProperties> = (
                 )}
 
                 {dataRequested &&
-                dataExists === false && (
+                dataExists === false &&
+                dataProcessing !== true && (
                     <PureButton
                         text="Request Diarization"
                         atClick={() => {
@@ -482,6 +495,12 @@ const Popup: React.FC<PopupProperties> = (
                             marginTop: '2rem',
                         }}
                     />
+                )}
+
+                {dataProcessing === true && (
+                    <div>
+                        diarization processing
+                    </div>
                 )}
 
                 <div>

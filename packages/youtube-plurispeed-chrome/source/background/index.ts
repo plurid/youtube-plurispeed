@@ -61,6 +61,13 @@ chrome.runtime.onMessage.addListener(
                         return;
                     }
 
+                    if (!data) {
+                        chrome.runtime.sendMessage({
+                            type: MESSAGE.BG_P_PROCESSING,
+                        });
+                        return;
+                    }
+
                     const speakers = (data.labels as string[]).map((label, index) => {
                         return {
                             id: index,
