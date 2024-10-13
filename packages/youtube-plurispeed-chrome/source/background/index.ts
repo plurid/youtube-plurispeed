@@ -10,9 +10,10 @@ chrome.runtime.onMessage.addListener(
         try {
             switch (message.type) {
                 case MESSAGE.REQUEST_DIARIZATION: {
-                    const tab = sender.tab;
-                    const url = tab.url || '';
-                    if (!url) {
+                    const {
+                        url,
+                    } = message;
+                    if (!url.includes('youtube.com/watch')) {
                         return;
                     }
 

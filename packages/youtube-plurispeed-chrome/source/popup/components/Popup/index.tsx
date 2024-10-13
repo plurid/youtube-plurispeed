@@ -130,8 +130,9 @@ const Popup: React.FC<PopupProperties> = (
     const requestDiarization = async () => {
         try {
             const tab = await getActiveTab();
-            await chrome.tabs.sendMessage(tab.id, {
+            chrome.runtime.sendMessage({
                 type: MESSAGE.REQUEST_DIARIZATION,
+                url: tab.url,
             });
         } catch (error) {
             return;
