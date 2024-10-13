@@ -5,6 +5,26 @@ import {
 
 
 
+const apiRequest = async <D>(
+    endpoint: string,
+    data: D,
+) => {
+    const request = await fetch(API_ENDPOINT + endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    return await request.json();
+}
+
+const checkYouTubeWatchURL = (url: string) => {
+    return url.includes('youtube.com/watch');
+}
+
+
 chrome.runtime.onMessage.addListener(
     async (message, sender, _sendResponse) => {
         try {
@@ -13,28 +33,42 @@ chrome.runtime.onMessage.addListener(
                     const {
                         url,
                     } = message;
-                    if (!url.includes('youtube.com/watch')) {
+                    if (!checkYouTubeWatchURL(url)) {
                         return;
                     }
 
-                    const request = await fetch(API_ENDPOINT + '/request-diarization', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            url,
-                        }),
-                    });
                     const {
                         status,
-                    } = await request.json();
+                    } = await apiRequest('/request-diarization', {
+                        url,
+                    });
                     if (!status) {
                         return;
                     }
 
                     return;
                 }
+
+                case MESSAGE.REQUEST_LABELS_CHECK: {
+                    const {
+                        url,
+                    } = message;
+                    if (!checkYouTubeWatchURL(url)) {
+                        return;
+                    }
+
+                    const {
+                        status,
+                    } = await apiRequest('/request-labels-check', {
+                        url,
+                    });
+                    if (!status) {
+                        return;
+                    }
+
+                    return;
+                }
+
                 case MESSAGE.GET_DATA: {
                     const tab = sender.tab;
                     const url = tab.url || '';
@@ -42,19 +76,12 @@ chrome.runtime.onMessage.addListener(
                         return;
                     }
 
-                    const request = await fetch(API_ENDPOINT + '/get-diarization', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            url,
-                        }),
-                    });
                     const {
                         status,
                         data,
-                    } = await request.json();
+                    } = await apiRequest('/get-diarization', {
+                        url,
+                    });
                     if (!status) {
                         chrome.runtime.sendMessage({
                             type: MESSAGE.BG_P_NO_DATA,

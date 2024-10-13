@@ -139,6 +139,18 @@ const Popup: React.FC<PopupProperties> = (
         }
     }
 
+    const requestLabelsCheck = async () => {
+        try {
+            const tab = await getActiveTab();
+            chrome.runtime.sendMessage({
+                type: MESSAGE.REQUEST_LABELS_CHECK,
+                url: tab.url,
+            });
+        } catch (error) {
+            return;
+        }
+    }
+
     const reset = () => {
     }
     // #endregion handlers
@@ -503,6 +515,20 @@ const Popup: React.FC<PopupProperties> = (
                         diarization processing
                     </div>
                 )}
+
+                <div>
+                    <LinkButton
+                        text="request labels check"
+                        atClick={() => {
+                            requestLabelsCheck();
+                        }}
+                        theme={dewiki}
+                        style={{
+                            marginTop: '2rem',
+                        }}
+                        inline={true}
+                    />
+                </div>
 
                 <div>
                     <LinkButton
