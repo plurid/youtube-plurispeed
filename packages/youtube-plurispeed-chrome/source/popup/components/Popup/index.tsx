@@ -68,6 +68,11 @@ const Popup: React.FC<PopupProperties> = (
     ] = useState(true);
 
     const [
+        diarizationID,
+        setDiarizationID,
+    ] = useState('');
+
+    const [
         dataRequested,
         setDataRequested,
     ] = useState(false);
@@ -141,10 +146,13 @@ const Popup: React.FC<PopupProperties> = (
 
     const requestLabelsCheck = async () => {
         try {
-            const tab = await getActiveTab();
+            if (!diarizationID) {
+                return;
+            }
+
             chrome.runtime.sendMessage({
                 type: MESSAGE.REQUEST_LABELS_CHECK,
-                url: tab.url,
+                id: diarizationID,
             });
         } catch (error) {
             return;

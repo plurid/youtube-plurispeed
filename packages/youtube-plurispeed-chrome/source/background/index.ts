@@ -51,16 +51,14 @@ chrome.runtime.onMessage.addListener(
 
                 case MESSAGE.REQUEST_LABELS_CHECK: {
                     const {
-                        url,
+                        id,
                     } = message;
-                    if (!checkYouTubeWatchURL(url)) {
-                        return;
-                    }
 
                     const {
                         status,
-                    } = await apiRequest('/request-labels-check', {
-                        url,
+                    } = await apiRequest('/flag-diarization', {
+                        id,
+                        flag: 'L',
                     });
                     if (!status) {
                         return;
