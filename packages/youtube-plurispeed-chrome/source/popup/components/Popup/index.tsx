@@ -13,6 +13,7 @@
 
     import {
         InputSwitch,
+        Switch,
         PureButton,
         LinkButton,
         Slider,
@@ -419,25 +420,31 @@ const Popup: React.FC<PopupProperties> = (
                                     </div>
                                 )}
 
-                                {speechSpeedActive === false && (
-                                    <div
+                                <div
+                                    style={{
+                                        paddingLeft: '1rem',
+                                    }}
+                                >
+                                    <h2
                                         style={{
-                                            paddingLeft: '1rem',
+                                            textAlign: 'center',
+                                            fontSize: '1.1rem',
                                         }}
                                     >
-                                        <h2
-                                            style={{
-                                                textAlign: 'center',
-                                                fontSize: '1.1rem',
-                                            }}
-                                        >
-                                            speakers
-                                        </h2>
+                                        speakers
+                                    </h2>
 
-                                        {activeTabSpeakers.map(speaker => {
-                                            return (
+                                    {activeTabSpeakers.map(speaker => {
+                                        return (
+                                            <div
+                                                key={speaker.id}
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    gap: '2',
+                                                }}
+                                            >
                                                 <div
-                                                    key={speaker.id}
                                                     style={{
                                                         ...sliderStyle,
                                                     }}
@@ -455,12 +462,27 @@ const Popup: React.FC<PopupProperties> = (
                                                             {speaker.name}
                                                         </span>
                                                         <br />
-                                                        {speaker.speed === 1
-                                                            ? 'normal'
-                                                            : (speaker.speed).toFixed(1)
-                                                        }
+                                                        {speechSpeedActive === false && (
+                                                            <>
+                                                                {speaker.speed === 1
+                                                                    ? 'normal'
+                                                                    : (speaker.speed).toFixed(1)
+                                                                }
+                                                            </>
+                                                        )}
                                                     </div>
 
+                                                    <Switch
+                                                        checked={true}
+                                                        atChange={() => {
+                                                            // activate/skip speaker
+                                                        }}
+                                                        theme={dewiki}
+                                                        level={2}
+                                                    />
+                                                </div>
+
+                                                {speechSpeedActive === false && (
                                                     <Slider
                                                         name={speaker.name}
                                                         value={speaker.speed}
@@ -487,16 +509,16 @@ const Popup: React.FC<PopupProperties> = (
                                                         min={0.1}
                                                         max={2.5}
                                                         step={0.1}
+                                                        width="100%"
                                                         defaultValue={1}
-                                                        width={100}
                                                         theme={dewiki}
                                                         level={2}
                                                     />
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         )}
                     </>
