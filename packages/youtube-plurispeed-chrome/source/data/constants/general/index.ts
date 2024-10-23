@@ -39,7 +39,7 @@ export const MESSAGE = {
 
 
 export const SPEAKER = {
-    SPEECH_GAP: -2,
+    SPEECHLESS: -2,
     OVERLAP: -1,
 } as const;
 // #endregion module

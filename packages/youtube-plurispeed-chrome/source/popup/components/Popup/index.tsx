@@ -462,7 +462,9 @@ const Popup: React.FC<PopupProperties> = (
                                                             {speaker.name}
                                                         </span>
                                                         <br />
-                                                        {speechSpeedActive === false && (
+                                                        {speechSpeedActive === false
+                                                        && speaker.active
+                                                        && (
                                                             <>
                                                                 {speaker.speed === 1
                                                                     ? 'normal'
@@ -473,16 +475,36 @@ const Popup: React.FC<PopupProperties> = (
                                                     </div>
 
                                                     <Switch
-                                                        checked={true}
+                                                        checked={speaker.active}
                                                         atChange={() => {
-                                                            // activate/skip speaker
+                                                            const newSpeakers = activeTabSpeakers.map(activeTabSpeaker => {
+                                                                if (activeTabSpeaker.id === speaker.id) {
+                                                                    return {
+                                                                        ...activeTabSpeaker,
+                                                                        active: !activeTabSpeaker.active,
+                                                                    };
+                                                                }
+
+                                                                return {
+                                                                    ...activeTabSpeaker,
+                                                                };
+                                                            });
+
+                                                            setActiveTabSpeakers(newSpeakers);
+                                                            chrome.tabs.sendMessage(activeTab.id, {
+                                                                type: MESSAGE.UPDATE_SPEAKERS,
+                                                                speakers: newSpeakers,
+                                                            });
                                                         }}
                                                         theme={dewiki}
                                                         level={2}
+                                                        exclusive={true}
                                                     />
                                                 </div>
 
-                                                {speechSpeedActive === false && (
+                                                {speechSpeedActive === false
+                                                && speaker.active
+                                                && (
                                                     <Slider
                                                         name={speaker.name}
                                                         value={speaker.speed}

@@ -398,15 +398,22 @@ const togglePluriSpeed = () => {
                         end,
                     ] = activeSegment;
 
+                    const activeSpeaker = speakers.find(speaker => speaker.id === speakerID);
+                    if (activeSpeaker && !activeSpeaker.active) {
+                        video.currentTime = end;
+                        return;
+                    }
+
                     if (currentTime >= start && currentTime <= end) {
-                        if (speakerID === SPEAKER.SPEECH_GAP) {
-                            setVideoPlaybackRate(SPEED.NORMAL);
+                        if (speakerID === SPEAKER.SPEECHLESS) {
+                            const speechless = speakers.find(speaker => speaker.id === SPEAKER.SPEECHLESS);
+                            setVideoPlaybackRate(speechless.speed);
                             return;
                         }
 
                         if (speakerID === SPEAKER.OVERLAP) {
-                            const overlapSpeed = speakers[speakers.length - 1].speed;
-                            setVideoPlaybackRate(overlapSpeed);
+                            const overlap = speakers.find(speaker => speaker.id === SPEAKER.OVERLAP);
+                            setVideoPlaybackRate(overlap.speed);
                             return;
                         }
 

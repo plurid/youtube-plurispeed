@@ -7,6 +7,7 @@ export type Speaker = {
     id: number;
     name: string;
     speed: number;
+    active: boolean;
 }
 
 /**

@@ -3,6 +3,10 @@ import {
     MESSAGE,
 } from '~data/constants';
 
+import {
+    Speaker,
+} from '~data/interfaces';
+
 
 
 const apiRequest = async <D>(
@@ -94,17 +98,25 @@ chrome.runtime.onMessage.addListener(
                         return;
                     }
 
-                    const speakers = (data.labels as string[]).map((label, index) => {
+                    const speakers: Speaker[] = (data.labels as string[]).map((label, index) => {
                         return {
                             id: index,
                             name: label,
                             speed: 1,
+                            active: true,
                         };
                     });
                     speakers.push({
                         id: -1,
                         name: 'Overlap',
                         speed: 1,
+                        active: true,
+                    });
+                    speakers.push({
+                        id: -2,
+                        name: 'Speechless',
+                        speed: 1,
+                        active: true,
                     });
 
                     chrome.tabs.sendMessage(tab.id, {
