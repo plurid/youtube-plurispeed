@@ -452,6 +452,7 @@ const Popup: React.FC<PopupProperties> = (
                                                     <div
                                                         style={{
                                                             minWidth: '60px',
+                                                            textAlign: 'left',
                                                         }}
                                                     >
                                                         <span
